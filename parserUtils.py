@@ -1,5 +1,9 @@
+from urllib.request import urlretrieve
+import zipfile
+
+
 class TextParser:
-    def __init__(self, cwe_file ="cwec_v4.12.xml"):
+    def __init__(self, cwe_file="cwec_v4.12.xml"):
         self.cwe_file = cwe_file
 
     def replaceDescription(self):
@@ -64,3 +68,29 @@ class TextParser:
                 clean.write("\n")
         clean.write("]}")
         clean.close()
+
+
+class CWEDownload:
+    def __init__(self, filename="cwe_list.zip", link="https://cwe.mitre.org/data/xml/cwec_latest.xml.zip"):
+        self.link = link
+        self.filename = filename
+
+    def downloadCWEList(self):
+        """
+        Downloads latest cwe list from https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
+        :return: None
+        """
+        url = self.link
+        urlretrieve(url, filename=self.filename)
+
+    def unzipCWEList(self):
+        """
+        Unzips downloaded .zip file
+        :return: None
+        """
+        with zipfile.ZipFile(self.filename, "r") as zip:
+            zip.extractall()
+
+    def loadAndUnzip(self):
+        self.downloadCWEList()
+        self.unzipCWEList()
