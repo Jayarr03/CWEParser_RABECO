@@ -60,6 +60,7 @@ class TextParser:
                     line = line.replace(">", "")
                     line = line.replace(u"\u0009", "")
                     line = line.replace("\\", "\\\\")
+                    line = " ".join(line.split())
                     clean.write(line.strip())
                     clean.write("\"")
 
@@ -68,6 +69,7 @@ class TextParser:
                     line = line.replace("</Description>", "")
                     line = line.replace(u"\u0009", "")
                     line = line.replace("\\", "\\\\")
+                    line = " ".join(line.split())
                     clean.write(line.replace("\n", ""))
                     clean.write("\"},")
                 clean.write("\n")

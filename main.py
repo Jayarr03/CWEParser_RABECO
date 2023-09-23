@@ -8,5 +8,6 @@ def main():
     textparser.parseCWE()
     textparser.removeTmpFiles()
 
+
 if __name__ == "__main__":
     main()
