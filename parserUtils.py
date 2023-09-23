@@ -92,5 +92,9 @@ class CWEDownload:
             zip.extractall()
 
     def loadAndUnzip(self):
+        """
+        Downloads and unzips .zip archive of CWE list
+        :return: None
+        """
         self.downloadCWEList()
         self.unzipCWEList()
