@@ -57,17 +57,27 @@ class TextParser:
                     line = line.replace("Status=", "\", \"status\":\"")
                     line = line.replace("\n", "")
                     line = line.replace(">", "")
+                    line = line.replace(u"\u0009", "")
+                    line = line.replace("\\", "\\\\")
                     clean.write(line.strip())
                     clean.write("\"")
 
                 if "<Description>" in line:
                     line = line.replace("<Description>", ", \"description\":\"")
                     line = line.replace("</Description>", "")
+                    line = line.replace(u"\u0009", "")
+                    line = line.replace("\\", "\\\\")
                     clean.write(line.replace("\n", ""))
                     clean.write("\"},")
                 clean.write("\n")
+        clean.write("{}")
         clean.write("]}")
         clean.close()
+
+    def parseCWE(self):
+        self.replaceDescription()
+        self.extractCWE()
+        self.cweToJson()
 
 
 class CWEDownload:
