@@ -1,3 +1,4 @@
+import os
 from urllib.request import urlretrieve
 import zipfile
 
@@ -79,6 +80,11 @@ class TextParser:
         self.extractCWE()
         self.cweToJson()
 
+    def removeTmpFiles(self):
+        filelist = os.listdir()
+        for item in filelist:
+            if item.endswith(".zip") or item.endswith(".txt") or item.endswith(".xml"):
+                os.remove(item)
 
 class CWEDownload:
     def __init__(self, filename="cwe_list.zip", link="https://cwe.mitre.org/data/xml/cwec_latest.xml.zip"):
