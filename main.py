@@ -1,4 +1,5 @@
-from textParsedElements import parserUtils
+import parserUtils
+
 
 def main():
     textparser = parserUtils.TextParser()
