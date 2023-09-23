@@ -76,11 +76,19 @@ class TextParser:
         clean.close()
 
     def parseCWE(self):
+        """
+        Parses downloaded CWE list and creates a .json file
+        :return:
+        """
         self.replaceDescription()
         self.extractCWE()
         self.cweToJson()
 
     def removeTmpFiles(self):
+        """
+        Removes unnecessary files (.zip, .txt, .xml)
+        :return: None
+        """
         filelist = os.listdir()
         for item in filelist:
             if item.endswith(".zip") or item.endswith(".txt") or item.endswith(".xml"):
