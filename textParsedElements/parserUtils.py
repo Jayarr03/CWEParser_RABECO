@@ -1,9 +1,12 @@
 class TextParser:
-    def __init__(self, tmpfilename = "tmp.xml", cwe_file = "cwec_v4.12.xml"):
+    def __init__(self, cwe_file ="cwec_v4.12.xml"):
         self.cwe_file = cwe_file
-        self.tmpFilename = tmpfilename
 
     def replaceDescription(self):
+        """
+        Places a newline before every Description-tag to simplify parsing
+        :return: No return value. Generates a new file called tmp.xml with the newly placed tags
+        """
         tmp = open("tmp.xml", "w", encoding="utf-8")
         with open(self.cwe_file, "r", encoding="utf-8") as f:
             for line in f.readlines():
@@ -12,6 +15,10 @@ class TextParser:
         tmp.close()
 
     def extractCWE(self):
+        """
+        Extracts every Weakness with given description and prints them to a txt-file
+        :return: No return, only cwe.txt is created
+        """
         tmp = open("tmp.xml", "r", encoding="utf-8")
         with open("cwe.txt", "w", encoding="utf-8") as f:
             lines = tmp.readlines()
@@ -27,7 +34,11 @@ class TextParser:
                 continue
         tmp.close()
 
-    def cleanCWEOut(self):
+    def cweToJson(self):
+        """
+        Creates json-file by replacing tags with json-descriptors
+        :return: Only cwe.json is created
+        """
         clean = open("cwe.json", "w", encoding="utf-8")
         clean.write("{ \"CWEs\": [")
         with open("cwe.txt", "r", encoding="utf-8") as f:
