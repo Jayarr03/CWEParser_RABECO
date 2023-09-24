@@ -8,3 +8,6 @@ executing etparser.py, you'll use this approach.
 
 No matter which approach you use, there will be no unnecessary files left
 because they're cleaned up in the process.
+
+The original cwe with more detailed descriptions can be found here: 
+https://cwe.mitre.org/data/downloads.html
