@@ -1,6 +1,7 @@
 import os
 from urllib.request import urlretrieve
 import zipfile
+import xml.etree.ElementTree as ET
 
 
 class TextParser:
@@ -128,5 +129,56 @@ class CWEDownload:
 
 
 class ElementTreeParser:
-    def __init__(self):
-        pass
+    def __init__(self, cwe_file="cwec_v4.12.xml"):
+        self.cwe_file = cwe_file
+
+    def etParser(self):
+        """
+        Uses ElementTree to parse the cwe .xml file to a .json file. Takes the path as argument which should be given by the constructor
+        :return: None. Produces a file called cwe.json
+        """
+        tree = ET.parse(self.cwe_file)
+        cwe = open("cwe.json", "w")
+        cwe.write("{\"CWE\":[")
+        root = tree.getroot()
+        weaknesses = root.find("{http://cwe.mitre.org/cwe-7}Weaknesses")
+        for weakness in weaknesses:
+            id_name = "{{\"id\":\"{}\", \"name\": \"{}\", ".format(weakness.attrib["ID"],
+                                                                   weakness.attrib["Name"].replace("\\", "\\\\"))
+            for des in weakness:
+                if "{http://cwe.mitre.org/cwe-7}Description" == des.tag:
+                    tmp_des = des.text
+                    tmp_des = tmp_des.replace("\\", "\\\\").replace("\"", "\\\"")
+                    id_name_des = id_name + "\"description\":\"{}\"}},".format(tmp_des). \
+                        replace("\n", " "). \
+                        replace(u"\u0009", " ") + "\n"
+                    cwe.write(id_name_des)
+        cwe.write("{}]}")
+
+    def downloadAndUnzip(self):
+        """
+        Loads .xml file from https://cwe.mitre.org/data/downloads.html and unzips it
+        :return: None
+        """
+        loader = CWEDownload()
+        loader.loadAndUnzip()
+
+    def removeTmpFiles(self):
+        """
+        Removes unnecessary files (.zip, .txt, .xml)
+        :return: None
+        """
+        filelist = os.listdir()
+        for item in filelist:
+            if item.endswith(".zip") or item.endswith(".txt") or item.endswith(".xml"):
+                os.remove(item)
+
+
+    def parseCWE(self):
+        """
+        Starts the whole parsing process and deletes unnecessary data afterwards
+        :return: None
+        """
+        self.downloadAndUnzip()
+        self.etParser()
+        self.removeTmpFiles()
