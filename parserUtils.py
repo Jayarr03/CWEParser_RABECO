@@ -138,7 +138,7 @@ class ElementTreeParser:
         """
         tree = ET.parse(self.cwe_file)
         cwe = open("cwe.json", "w")
-        cwe.write("{\"CWE\":[")
+        cwe.write("{\"CWE\":[\n")
         root = tree.getroot()
         weaknesses = root.find("{http://cwe.mitre.org/cwe-7}Weaknesses")
         for weakness in weaknesses:
@@ -162,12 +162,13 @@ class ElementTreeParser:
 
     def getCategories(self):
         """
-        Creates another .json file with name, ids and summaries of all categories. It's automatically called during the parsing process
+        Creates another .json file with name, ids and summaries of all categories. It's automatically called during
+        the parsing process
         :return: None
         """
         tree = ET.parse(self.cwe_file)
         cats = open("categories.json", "w")
-        cats.write("{\"CWE\":[")
+        cats.write("{\"Categories\":[\n")
         root = tree.getroot()
         categories = root.find("{http://cwe.mitre.org/cwe-7}Categories")
         for category in categories:
@@ -188,6 +189,25 @@ class ElementTreeParser:
             f.truncate()
             f.write(b"}\n]}")
 
+    def combineJsonFiles(self):
+        """
+        Combines both .json files to one .json file
+        :return: None. Creates a file called combined.json
+        """
+        with open("combined.json", "w") as com:
+            with open("categories.json", "r") as cat:
+                with open("cwe.json", "r") as cwe:
+                    for line in cwe:
+                        if "]}" in line:
+                            line = "],\n"
+                        com.write(line)
+                    for line in cat:
+                        if "\"Categories\"" in line:
+                            line = "\"Categories\":[\n"
+                        com.write(line)
+
+
+
     def downloadAndUnzip(self):
         """
         Loads .xml file from https://cwe.mitre.org/data/downloads.html and unzips it
@@ -206,11 +226,13 @@ class ElementTreeParser:
             if item.endswith(".zip") or item.endswith(".txt") or item.endswith(".xml"):
                 os.remove(item)
 
-    def parseCWE(self):
+    def parseCWE(self, combine=False):
         """
         Starts the whole parsing process and deletes unnecessary data afterwards
         :return: None
         """
         self.downloadAndUnzip()
         self.etParser()
+        if combine:
+            self.combineJsonFiles()
         self.removeTmpFiles()
