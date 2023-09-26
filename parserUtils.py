@@ -151,6 +151,8 @@ class ElementTreeParser:
                     id_name_des = id_name + "\"description\":\"{}\"}},".format(tmp_des). \
                         replace("\n", " "). \
                         replace(u"\u0009", " ") + "\n"
+                    id_name_des = " ".join(id_name_des.split()) + "\n"
+
                     cwe.write(id_name_des)
         cwe.write("{}]}")
         cwe.close()
@@ -177,6 +179,7 @@ class ElementTreeParser:
                     id_name_des = id_name + "\"summary\":\"{}\"}},".format(tmp_des). \
                         replace("\n", " "). \
                         replace(u"\u0009", " ") + "\n"
+                    id_name_des = " ".join(id_name_des.split()) + "\n"
                     cats.write(id_name_des)
         cats.write("{}]}")
         cats.close()
