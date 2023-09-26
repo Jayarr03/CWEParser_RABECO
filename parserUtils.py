@@ -152,12 +152,13 @@ class ElementTreeParser:
                         replace("\n", " "). \
                         replace(u"\u0009", " ") + "\n"
                     id_name_des = " ".join(id_name_des.split()) + "\n"
-
                     cwe.write(id_name_des)
-        cwe.write("{}]}")
         cwe.close()
+        with open("cwe.json", "rb+") as f:
+            f.seek(-4, 2)
+            f.truncate()
+            f.write(b"}\n]}")
         self.getCategories()
-
 
     def getCategories(self):
         """
@@ -181,8 +182,11 @@ class ElementTreeParser:
                         replace(u"\u0009", " ") + "\n"
                     id_name_des = " ".join(id_name_des.split()) + "\n"
                     cats.write(id_name_des)
-        cats.write("{}]}")
         cats.close()
+        with open("categories.json", "rb+") as f:
+            f.seek(-4, 2)
+            f.truncate()
+            f.write(b"}\n]}")
 
     def downloadAndUnzip(self):
         """
@@ -201,7 +205,6 @@ class ElementTreeParser:
         for item in filelist:
             if item.endswith(".zip") or item.endswith(".txt") or item.endswith(".xml"):
                 os.remove(item)
-
 
     def parseCWE(self):
         """
