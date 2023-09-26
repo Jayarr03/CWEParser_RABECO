@@ -108,8 +108,7 @@ class CWEDownload:
         Downloads latest cwe list from https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
         :return: None
         """
-        url = self.link
-        urlretrieve(url, filename=self.filename)
+        urlretrieve(self.link, filename=self.filename)
 
     def unzipCWEList(self):
         """
@@ -154,6 +153,33 @@ class ElementTreeParser:
                         replace(u"\u0009", " ") + "\n"
                     cwe.write(id_name_des)
         cwe.write("{}]}")
+        cwe.close()
+        self.getCategories()
+
+
+    def getCategories(self):
+        """
+        Creates another .json file with name, ids and summaries of all categories. It's automatically called during the parsing process
+        :return: None
+        """
+        tree = ET.parse(self.cwe_file)
+        cats = open("categories.json", "w")
+        cats.write("{\"CWE\":[")
+        root = tree.getroot()
+        categories = root.find("{http://cwe.mitre.org/cwe-7}Categories")
+        for category in categories:
+            id_name = "{{\"id\":\"{}\", \"name\": \"{}\", ".format(category.attrib["ID"],
+                                                                   category.attrib["Name"].replace("\\", "\\\\"))
+            for cat in category:
+                if "{http://cwe.mitre.org/cwe-7}Summary" == cat.tag:
+                    tmp_des = cat.text
+                    tmp_des = tmp_des.replace("\\", "\\\\").replace("\"", "\\\"")
+                    id_name_des = id_name + "\"summary\":\"{}\"}},".format(tmp_des). \
+                        replace("\n", " "). \
+                        replace(u"\u0009", " ") + "\n"
+                    cats.write(id_name_des)
+        cats.write("{}]}")
+        cats.close()
 
     def downloadAndUnzip(self):
         """
