@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 
 class TextParser:
-    def __init__(self, cwe_file="cwec_v4.12.xml"):
+    def __init__(self, cwe_file="cwec_v4.13.xml"):
         self.cwe_file = cwe_file
 
     def replaceDescription(self):
@@ -128,7 +128,7 @@ class CWEDownload:
 
 
 class ElementTreeParser:
-    def __init__(self, cwe_file="cwec_v4.12.xml"):
+    def __init__(self, cwe_file="cwec_v4.13.xml"):
         self.cwe_file = cwe_file
 
     def etParser(self):
